@@ -2,15 +2,19 @@
 
 from fastapi import APIRouter
 
+from app.core.settings import get_settings
+
 router = APIRouter()
 
 
 @router.get("/", tags=["Root"])
 async def root() -> dict[str, str]:
-    """Return application information."""
+    """Return application metadata."""
+
+    settings = get_settings()
 
     return {
-        "application": "Agentic RAG Assistant",
-        "version": "0.1.0",
-        "environment": "development",
+        "application": settings.app_name,
+        "version": settings.app_version,
+        "environment": settings.environment,
     }

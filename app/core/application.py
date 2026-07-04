@@ -1,22 +1,41 @@
 """FastAPI application factory."""
 
+from __future__ import annotations
+
+import logging
+
 from fastapi import FastAPI
+
+from app.core.logging import configure_logging
+from app.core.settings import get_settings
+
+logger = logging.getLogger(__name__)
 
 
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
 
+    configure_logging()
+
+    settings = get_settings()
+
+    logger.info("Starting %s", settings.app_name)
+
     app = FastAPI(
-        title="Agentic RAG Assistant",
-        description="Production-grade Agentic RAG Assistant",
-        version="0.1.0",
+        title=settings.app_name,
+        description=settings.app_description,
+        version=settings.app_version,
     )
 
     @app.get("/")
     async def root() -> dict[str, str]:
         """Root endpoint."""
+        logger.info("Root endpoint called")
+
         return {
-            "message": "Welcome to Agentic RAG Assistant"
+            "application": settings.app_name,
+            "version": settings.app_version,
+            "environment": settings.environment,
         }
 
     return app

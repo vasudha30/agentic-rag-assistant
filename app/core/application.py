@@ -9,6 +9,8 @@ from fastapi import FastAPI
 from app.core.logging import configure_logging
 from app.core.settings import get_settings
 
+from app.api.router import api_router
+
 logger = logging.getLogger(__name__)
 
 
@@ -26,6 +28,8 @@ def create_app() -> FastAPI:
         description=settings.app_description,
         version=settings.app_version,
     )
+    app.include_router(api_router)
+
 
     @app.get("/")
     async def root() -> dict[str, str]:

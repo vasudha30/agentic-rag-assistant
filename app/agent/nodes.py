@@ -119,6 +119,16 @@ class AgentNodes:
             "look online",
         )
 
+        no_web_terms = (
+            "do not search the web",
+            "don't search the web",
+            "do not use the web",
+            "don't use the web",
+            "without searching the web",
+            "without web search",
+            "no web search",
+        )
+
         # Coding requests must be checked before RAG because requests such as
         # "convert this Python file to Java" also contain the word "file".
         if self._looks_like_coding_request(query_lower, state):
@@ -129,7 +139,10 @@ class AgentNodes:
             state.route = "weather"
         elif any(term in query_lower for term in calculator_terms):
             state.route = "calculator"
-        elif any(term in query_lower for term in web_terms):
+        elif (
+            any(term in query_lower for term in web_terms)
+            and not any(term in query_lower for term in no_web_terms)
+        ):
             state.route = "web"
         elif self._looks_like_calculation(query):
             state.route = "calculator"

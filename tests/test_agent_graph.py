@@ -299,3 +299,17 @@ def test_web_route_handles_search_failure() -> None:
         "I could not search the web right now. " "Please try again shortly."
     )
     assert state.error == "Search service unavailable"
+
+def test_planner_does_not_search_when_user_opts_out(
+    agent_graph,
+) -> None:
+    from app.agent.state import AgentState
+
+    state = AgentState(
+        query="Explain RAG in simple terms. Do not search the web.",
+        user_id="test-user",
+    )
+
+    result = agent_graph.invoke(state)
+
+    assert result["route"] == "general"

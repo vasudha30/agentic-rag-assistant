@@ -147,6 +147,10 @@ function App() {
   const startNewConversation = () => {
     if (isSending) return
 
+    setShowCodingAssistant(false)
+    setShowDocuments(false)
+    setShowSettings(false)
+
     setMessages([])
     setMessage('')
     setSelectedDocument(null)
@@ -201,6 +205,9 @@ function App() {
 
   const loadConversation = async (id: number) => {
     if (!accessToken || isSending) return
+    setShowCodingAssistant(false)
+    setShowDocuments(false)
+    setShowSettings(false)
 
     try {
       const response = await getConversation(
@@ -492,29 +499,41 @@ function App() {
 
         {/* Sidebar bottom */}
         <div className="sidebar-bottom">
-          <button 
-          className="sidebar-link"
-          onClick={() => setShowDocuments(true)}
+          {/* Documents */}
+          <button
+            type="button"
+            className="sidebar-link"
+            onClick={() => {
+              setShowCodingAssistant(false)
+              setShowSettings(false)
+              setShowDocuments(true)
+            }}
           >
             <span>▣</span>
             Documents
           </button>
-          <button
-          className="sidebar-link"
-          onClick={() => {
-          setShowDocuments(false)
-          setShowCodingAssistant(true)
-          }}
-          >
-          <span>⌘</span>
-          Coding Assistant
-         </button>
 
+          {/* Coding Assistant */}
           <button
+            type="button"
             className="sidebar-link"
             onClick={() => {
               setShowDocuments(false)
+              setShowSettings(false)
+              setShowCodingAssistant(true)
+            }}
+          >
+            <span>⌘</span>
+            Coding Assistant
+          </button>
+
+          {/* Settings */}
+          <button
+            type="button"
+            className="sidebar-link"
+            onClick={() => {
               setShowCodingAssistant(false)
+              setShowDocuments(false)
               setShowSettings(true)
             }}
             aria-expanded={showSettings}
@@ -523,19 +542,16 @@ function App() {
             Settings
           </button>
 
+          {/* User account */}
           <div className="user-card">
             <div className="avatar">
-              {user.email
-                .charAt(0)
-                .toUpperCase()}
+              {user.email.charAt(0).toUpperCase()}
             </div>
 
             <div className="user-info">
               <strong>{user.email}</strong>
               <span>Authenticated user</span>
             </div>
-
-
 
             <button
               type="button"
@@ -548,6 +564,7 @@ function App() {
           </div>
         </div>
       </aside>
+
 
       <main className="main-content">
         <header className="topbar">

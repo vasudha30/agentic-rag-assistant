@@ -53,6 +53,10 @@ function App() {
   const [isLoadingDocuments, setIsLoadingDocuments] = useState(false)
   const [showDocuments, setShowDocuments] = useState(false)
 
+  const [showSettings, setShowSettings] = useState(false)
+  const [lightTheme, setLightTheme] = useState(false)
+  const [enterToSend, setEnterToSend] = useState(true)
+
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   /*
@@ -375,6 +379,7 @@ function App() {
     event: React.KeyboardEvent<HTMLTextAreaElement>,
   ) => {
     if (
+      enterToSend &&
       event.key === 'Enter' &&
       !event.shiftKey
     ) {
@@ -419,7 +424,7 @@ function App() {
    */
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell${lightTheme ? ' light-theme' : ''}`}>
       <aside className="sidebar">
         <div className="brand">
           <div className="brand-mark">✦</div>
@@ -505,7 +510,15 @@ function App() {
           Coding Assistant
          </button>
 
-          <button className="sidebar-link">
+          <button
+            className="sidebar-link"
+            onClick={() => {
+              setShowDocuments(false)
+              setShowCodingAssistant(false)
+              setShowSettings(true)
+            }}
+            aria-expanded={showSettings}
+          >
             <span>⚙</span>
             Settings
           </button>
@@ -522,7 +535,7 @@ function App() {
               <span>Authenticated user</span>
             </div>
 
-           
+
 
             <button
               type="button"
@@ -547,21 +560,7 @@ function App() {
             </span>
           </div>
 
-          <div className="topbar-actions">
-            <button
-              className="icon-button"
-              title="Documents"
-            >
-              ▣
-            </button>
 
-            <button
-              className="icon-button"
-              title="Settings"
-            >
-              ⚙
-            </button>
-          </div>
         </header>
 
         <section
@@ -681,7 +680,7 @@ function App() {
           )}
         </section>
 
-       
+
           {showCodingAssistant && (
             <CodingAssistant
               accessToken={accessToken}
@@ -829,6 +828,54 @@ function App() {
                 ))}
               </div>
             )}
+          </section>
+        )}
+
+        {showSettings && (
+          <section className="settings-panel" role="dialog" aria-modal="false" aria-labelledby="settings-title">
+            <div className="settings-panel-header">
+              <div>
+                <h2 id="settings-title">Settings</h2>
+                <p>Personalise your assistant experience</p>
+              </div>
+              <button type="button" className="settings-close" onClick={() => setShowSettings(false)} aria-label="Close settings">×</button>
+            </div>
+
+            <div className="settings-group">
+              <h3>Appearance</h3>
+              <p>Choose how Agentic RAG looks on this device.</p>
+              <div className="settings-choice-row">
+                <button type="button" className={`settings-choice${!lightTheme ? ' selected' : ''}`} onClick={() => setLightTheme(false)} aria-pressed={!lightTheme}>
+                  <span className="theme-preview theme-preview-dark">◐</span> Dark
+                </button>
+                <button type="button" className={`settings-choice${lightTheme ? ' selected' : ''}`} onClick={() => setLightTheme(true)} aria-pressed={lightTheme}>
+                  <span className="theme-preview theme-preview-light">☼</span> Light
+                </button>
+              </div>
+            </div>
+
+            <div className="settings-group">
+              <h3>Chat preferences</h3>
+              <label className="settings-toggle">
+                <span><strong>Enter to send</strong><small>Use Shift + Enter to add a new line.</small></span>
+                <input type="checkbox" checked={enterToSend} onChange={(event) => setEnterToSend(event.target.checked)} />
+              </label>
+            </div>
+
+            <div className="settings-group">
+              <h3>AI provider</h3>
+              <p>The provider is configured by the application deployment. Provider credentials and API keys are not shown here.</p>
+              <div className="settings-info-row"><span>Assistant</span><strong>Agentic RAG</strong></div>
+              <div className="settings-info-row"><span>Model configuration</span><strong>Managed by deployment</strong></div>
+            </div>
+
+            <div className="settings-group">
+              <h3>Account</h3>
+              <div className="settings-info-row"><span>Signed in as</span><strong className="settings-account-email">{user.email}</strong></div>
+              <button type="button" className="settings-secondary-button" onClick={() => { setShowSettings(false); handleLogout() }}>Sign out</button>
+            </div>
+
+            <button type="button" className="settings-done-button" onClick={() => setShowSettings(false)}>Done</button>
           </section>
         )}
 

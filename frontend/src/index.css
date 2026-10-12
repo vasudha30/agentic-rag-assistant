@@ -50,3 +50,36 @@ textarea {
 ::selection {
   background: rgba(124, 92, 255, 0.35);
 }
+
+html,
+body,
+#root {
+  min-height: 100%;
+  height: auto;
+}
+
+body {
+  overflow-y: auto;
+}
+
+.coding-assistant {
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+.coding-card {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+.coding-generate-button {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  position: relative;
+  flex-shrink: 0;
+}
